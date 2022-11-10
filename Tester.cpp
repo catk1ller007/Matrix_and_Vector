@@ -1,23 +1,41 @@
 #include <iostream>
 #include "TMatrix.h"
+#include "TVector.h"
+#include <locale>
 
 using namespace std;
 
 int main()
 {
-	TMatrix<int> a(5), b(5), c(5);
+	setlocale(LC_ALL, "rus");
+	TMatrix<int> A(4); 
+	TMatrix<int> B(4);
+	TMatrix<int> C(4);
 	int i, j;
 
-	for (i = 0; i < 5; i++)
-		for (j = i; j < 5; j++)
+	//Наши матрица А и В
+	for (i = 0; i < A.GetSizematr(); i++) {
+		for (j = i; j < A.GetSizematr(); j++)
 		{
-			a[i][j] = i * 10 + j;
-			b[i][j] = (i * 10 + j) * 100;
+			A[i][j] = i * 10 + j;
+			B[i][j] = (i * 10 + j) * 100;
 		}
-	c = a + b;
+	}
+	C = A + B;
 
-	cout << "Matrix a = " << endl << a << endl;
-	cout << "Matrix b = " << endl << b << endl;
-	cout << "Matrix c = a + b" << endl << c << endl;
+	cout << "Матрица А = " << endl << A << endl;
+
+	cout << "Матрица B = " << endl << B << endl;
+
+	cout << "Матрица C = A + B" << endl << C << endl;
+
+	C = A - B;
+
+	cout << "Матрица С = А - В" << endl << C;
+
+	B = A * C;
+
+	cout << "Матрица А*C = " << endl << B << endl;
+
 	return 0;
 }
