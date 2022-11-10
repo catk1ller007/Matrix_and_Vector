@@ -1,65 +1,105 @@
 #pragma once
+//#include <iostream>
+#include "TVector.h"
 
-class Matrix3
+using namespace std;
+
+template<typename T>
+class TMatrix
 {
 private:
-	int** mem;
-	int size;
+	TVector<TVector<T>> matrica;
+	int size_matrica;
 public:
-	Matrix3(int _size = 0) {
-		size = _size;
-		mem = new int* [size];
-		for (int i = 0; i < size; i++) {
-			mem[i] = new int[size];
-			for (int j = 0; j < size; j++) {
-				mem[i][j] = 0;
-			}
-		}
-	};
-	~Matrix3() {
-		for (int i = 0; i < size; i++)
+	TMatrix(int size = 0)
+	{
+		size_matrica = size;
+		matrica = TVector<TVector<T>>(size_matrica, 0);
+		for (int i = 0; i < size_matrica; i++)
 		{
-			delete[] mem[i];
+			matrica[i] = TVector<T>(size_matrica - i, i);
 		}
-		delete[] mem;
-	};
-
-
-	Matrix3(const Matrix3& tmp) {
-		size = tmp.size;
-		mem = new int* [size];
-		for (int i = 0; i < size; i++)
-		{
-			mem[i] = new int[size];
-			for (int j = 0; j < size; j++)
-			{
-				mem[i][j] = tmp.mem[i][j];
-			}
-		}
-	};
-
-	Matrix3& operator=(Matrix3 tmp) {
-		if (size != tmp.size) {
-			if (size != 0) {
-				for (int i = 0; i < size; i++)
-				{
-					delete[] mem[i];
-				}
-				delete[] mem;
-			}
-			size = tmp.size;
-			mem = new int* [size];
-		}
-		for (int i = 0; i < size; i++) {
-			mem[i] = new int[size];
-			for (int j = 0; j < size; j++)
-			{
-				mem[i][j] = tmp.mem[i][j];
-			}
-		}
+	}
+	~TMatrix()
+	{
+	}
+	TMatrix(const TMatrix& tmp)
+	{
+		size_matrica = tmp.size_matrica;
+		matrica = tmp.matrica;
+	}
+	TMatrix& operator= (const TMatrix& tmp)
+	{
+		size_matrica = tmp.size_matrica;
+		matrica = tmp.matrica;
 		return *this;
 	}
+	TVector<T>& operator[](int k)
+	{
+		return matrica[k];
+	}
+	
+	//сложение матриц
+	TMatrix operator+ (TMatrix tmp)
+	{
+		TMatrix res;
+		if (size_matrica = tmp.size_matrica)
+		{
+			res.size_matrica = size_matrica;
+			res.matrica = matrica + tmp.matrica;
+		}
+		return res;
+	}
+	//вычитание матриц
+	TMatrix operator- (TMatrix tmp)
+	{
+		TMatrix res;
+		if (size_matrica = tmp.size_matrica)
+		{
+			res.size_matrica = size_matrica;
+			res.matrica = matrica - tmp.matrica;
+		}
+		return res;
+	}
+	//перемножение матриц
+	TMatrix operator* (TMatrix tmp)
+	{
+		TMatrix res(*this);
+		TMatrix C;
+		if (size_matrica = tmp.size_matrica)
+		{
+			C = TMatrix(size_matrica);
+			for (int i = 0; i < size_matrica; i++)
+			{
+				for (int j = i; j < size_matrica; j++)
+				{
+					C[i][j] = 0;
+					for (int k = i; k <= j; k++)
+					{
+						C[i][j] += res[i][k] * tmp[k][j];
+					}
+				}
+			}
+		}
+		return C;
+	}
+	TMatrix operator* (int k)
+	{
+		TMatrix res(*this);
+		res.matrica = matrica * k;
+		return res;
+	}
+	int GetSizematr()
+	{
+		return size_matrica;
+	}
+
+	friend ostream& operator<<(ostream& out, TMatrix& mt)
+	{
+		for (int i = 0; i < mt.size_matrica; i++)
+		{
+			out << mt.matrica[i] << endl;
+		}
+		return out;
+	}
 };
-
-
-
